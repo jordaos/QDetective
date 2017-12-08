@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import br.ufc.quixada.qdetective.fragments.AboutFragment;
+import br.ufc.quixada.qdetective.fragments.DenunciaListFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -88,7 +89,7 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_camera) {
             fm.beginTransaction().replace(R.id.content_frame, AboutFragment.newInstance()).commit();
         } else if (id == R.id.nav_gallery) {
-
+            fm.beginTransaction().replace(R.id.content_frame, DenunciaListFragment.newInstance(1)).commit();
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_manage) {
