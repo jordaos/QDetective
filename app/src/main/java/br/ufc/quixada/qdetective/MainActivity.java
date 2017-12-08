@@ -14,6 +14,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import br.ufc.quixada.qdetective.fragments.AboutFragment;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -84,7 +86,7 @@ public class MainActivity extends AppCompatActivity
         FragmentManager fm = getFragmentManager();
 
         if (id == R.id.nav_camera) {
-            fm.beginTransaction().replace(R.id.content_frame, AboutFragment.newInstance("", "")).commit();
+            fm.beginTransaction().replace(R.id.content_frame, AboutFragment.newInstance()).commit();
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {
