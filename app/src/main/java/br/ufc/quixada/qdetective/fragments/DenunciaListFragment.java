@@ -11,9 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import br.ufc.quixada.qdetective.R;
-import br.ufc.quixada.qdetective.fragments.dummy.DummyContent;
-import br.ufc.quixada.qdetective.fragments.dummy.DummyContent.DummyItem;
+import br.ufc.quixada.qdetective.entity.Denuncia;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -70,7 +71,21 @@ public class DenunciaListFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyDenunciaRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+
+            /* TESTS */
+            Denuncia denuncia1 = new Denuncia();
+            denuncia1.setId(1);
+            denuncia1.setDescricao("aa khaskj ffk");
+            denuncia1.setData(new Date(2017, 07, 1));
+            denuncia1.setLatitude(new Double(3));
+            denuncia1.setLongitude(new Double(3));
+            denuncia1.setUriMidia("");
+            denuncia1.setUsuario("Jordao");
+
+            List<Denuncia> listDen = new ArrayList<Denuncia>();
+            listDen.add(denuncia1);
+
+            recyclerView.setAdapter(new MyDenunciaRecyclerViewAdapter(listDen, mListener));
         }
         return view;
     }
@@ -105,6 +120,6 @@ public class DenunciaListFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+        void onListFragmentInteraction(Denuncia item);
     }
 }

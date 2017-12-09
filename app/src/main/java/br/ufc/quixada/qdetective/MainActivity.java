@@ -16,6 +16,7 @@ import android.view.MenuItem;
 
 import br.ufc.quixada.qdetective.fragments.AboutFragment;
 import br.ufc.quixada.qdetective.fragments.DenunciaListFragment;
+import br.ufc.quixada.qdetective.fragments.NewDenunciaFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -91,7 +92,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_gallery) {
             fm.beginTransaction().replace(R.id.content_frame, DenunciaListFragment.newInstance(1)).commit();
         } else if (id == R.id.nav_slideshow) {
-
+            fm.beginTransaction().replace(R.id.content_frame, NewDenunciaFragment.newInstance()).commit();
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {
