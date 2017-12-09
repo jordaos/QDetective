@@ -1,14 +1,33 @@
 package br.ufc.quixada.qdetective.fragments;
 
+import android.Manifest;
+import android.app.FragmentManager;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v4.app.ActivityCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Toast;
+
+import com.rengwuxian.materialedittext.MaterialEditText;
+
+import java.util.Calendar;
+import java.util.Date;
 
 import br.ufc.quixada.qdetective.R;
+import br.ufc.quixada.qdetective.controller.DenunciaController;
+import br.ufc.quixada.qdetective.entity.CategoriaDenuncia;
+import br.ufc.quixada.qdetective.entity.Denuncia;
 
 
 /**
@@ -21,6 +40,13 @@ import br.ufc.quixada.qdetective.R;
  */
 public class NewDenunciaFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
+
+    private DenunciaController controller;
+
+    private LocationManager locationManager;
+
+    private double latitude;
+    private double longitude;
 
     public NewDenunciaFragment() {
         // Required empty public constructor
@@ -46,8 +72,52 @@ public class NewDenunciaFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_new_denuncia, container, false);
+        controller = new DenunciaController(getActivity());
+        final View RootView = inflater.inflate(R.layout.fragment_new_denuncia, container, false);
+
+        Button newDenuncia = (Button) RootView.findViewById(R.id.newDenunciaButton);
+        newDenuncia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MaterialEditText nomeEditText = (MaterialEditText) RootView.findViewById(R.id.nomeEditText);
+                MaterialEditText descricaoEditText = (MaterialEditText) RootView.findViewById(R.id.descricaoEditText);
+                RadioGroup group = (RadioGroup)RootView.findViewById(R.id.group_categoria);
+
+                final CategoriaDenuncia[] categoria = {CategoriaDenuncia.EQUIPAMENTOS};
+                group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(RadioGroup group, int checkedId) {
+                        switch (checkedId) {
+                            case R.id.radio_equipamentos:
+                                categoria[0] = CategoriaDenuncia.EQUIPAMENTOS;
+                                break;
+                            case R.id.radio_limpeza_saneamento:
+                                categoria[0] = CategoriaDenuncia.LIMPEZA_SANEAMENTO;
+                                break;
+                            case R.id.radio_vias_publicas:
+                                categoria[0] = CategoriaDenuncia.VIAS_PUBLICAS;
+                                break;
+                        }
+                    }
+                });
+
+                String nome = nomeEditText.getText().toString();
+                String descricao = descricaoEditText.getText().toString();
+                Date currentTime = Calendar.getInstance().getTime();
+
+                getLocationManager();
+
+                Denuncia denuncia = new Denuncia(descricao, currentTime, longitude, latitude, "", nome, categoria[0]);
+                controller.addDenuncia(denuncia);
+
+                Toast.makeText(getActivity(), "Denúncia cadastrada com sucesso", Toast.LENGTH_LONG).show();
+
+                FragmentManager fm = getFragmentManager();
+                fm.beginTransaction().replace(R.id.content_frame, DenunciaListFragment.newInstance(1)).commit();
+            }
+        });
+
+        return RootView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -87,5 +157,56 @@ public class NewDenunciaFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    private void getLocationManager() {
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION,
+                            Manifest.permission.INTERNET},
+                    1);
+            return;
+        }
+
+        Listener listener = new Listener();
+        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        long tempoAtualizacao = 0;
+        float distancia = 0;
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, tempoAtualizacao, distancia, listener);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, tempoAtualizacao, distancia, listener);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case 1: {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED &&
+                        grantResults[1] == PackageManager.PERMISSION_GRANTED &&
+                        grantResults[2] == PackageManager.PERMISSION_GRANTED) {
+                    getLocationManager();
+                } else {
+                    Toast.makeText(getActivity(), "Sem permissão para uso de gps ou rede.", Toast.LENGTH_LONG).show();
+                }
+                return;
+            }
+        }
+    }
+
+    private class Listener implements LocationListener {
+
+        @Override
+        public void onLocationChanged(Location location) {
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {    }
+        @Override
+        public void onProviderEnabled(String provider) {  }
+        @Override
+        public void onProviderDisabled(String provider) { }
     }
 }

@@ -14,6 +14,7 @@ public class Denuncia {
     private Double latitude;
     private String uriMidia;
     private String usuario;
+    private CategoriaDenuncia categoria;
 
     public Integer getId() {
         return id;
@@ -71,4 +72,34 @@ public class Denuncia {
         this.usuario = usuario;
     }
 
+    public CategoriaDenuncia getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(CategoriaDenuncia categoria) {
+        this.categoria = categoria;
+    }
+
+    public Denuncia(String descricao, Date data, Double longitude, Double latitude, String uriMidia, String usuario, CategoriaDenuncia categoria) {
+        this.descricao = descricao;
+        this.data = data;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.uriMidia = uriMidia;
+        this.usuario = usuario;
+        this.categoria = categoria;
+    }
+
+    public Denuncia(Integer id, String descricao, Date data, Double longitude, Double latitude, String uriMidia, String usuario, CategoriaDenuncia categoria) {
+        this.id = id;
+        this.descricao = descricao;
+        this.data = data;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.uriMidia = uriMidia;
+        this.usuario = usuario;
+        this.categoria = categoria;
+    }
+
+    public Denuncia(){}
 }

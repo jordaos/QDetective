@@ -12,13 +12,39 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
         <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/nomeEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Seu nome"
             android:inputType="text"
             app:met_floatingLabel="highlight"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tipo de denúncia:"/>
+
+        <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/group_categoria"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <RadioButton android:id="@+id/radio_vias_publicas"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Vias públicas de acesso"
+                android:checked="true"/>
+            <RadioButton android:id="@+id/radio_equipamentos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Equipamentos comunitários"/>
+            <RadioButton android:id="@+id/radio_limpeza_saneamento"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Limpeza urbana e saneamento"/>
+        </RadioGroup>
 
         <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/descricaoEditText"
             android:layout_width="match_parent"
             android:layout_height="160dp"
             android:inputType="text|textMultiLine"
@@ -54,7 +80,7 @@
         </RelativeLayout>
 
         <Button
-            android:id="@+id/newDemandaButton"
+            android:id="@+id/newDenunciaButton"
             android:textColor="#fff"
             android:background="@color/colorPrimaryDark"
             android:layout_width="match_parent"
