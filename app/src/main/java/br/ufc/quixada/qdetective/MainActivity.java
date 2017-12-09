@@ -36,6 +36,8 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        getFragmentManager().beginTransaction().replace(R.id.content_frame, DenunciaListFragment.newInstance(1)).commit();
     }
 
     @Override
@@ -78,18 +80,12 @@ public class MainActivity extends AppCompatActivity
 
         FragmentManager fm = getFragmentManager();
 
-        if (id == R.id.nav_camera) {
-            fm.beginTransaction().replace(R.id.content_frame, AboutFragment.newInstance()).commit();
-        } else if (id == R.id.nav_gallery) {
-            fm.beginTransaction().replace(R.id.content_frame, DenunciaListFragment.newInstance(1)).commit();
-        } else if (id == R.id.nav_slideshow) {
+        if (id == R.id.nav_nova_denuncia) {
             fm.beginTransaction().replace(R.id.content_frame, NewDenunciaFragment.newInstance()).commit();
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        } else if (id == R.id.nav_todas_denuncias) {
+            fm.beginTransaction().replace(R.id.content_frame, AboutFragment.newInstance()).commit();
+        } else if (id == R.id.nav_minhas_denuncias) {
+            fm.beginTransaction().replace(R.id.content_frame, DenunciaListFragment.newInstance(1)).commit();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
