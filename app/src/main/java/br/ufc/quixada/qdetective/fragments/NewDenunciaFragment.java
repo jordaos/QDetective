@@ -3,6 +3,7 @@ package br.ufc.quixada.qdetective.fragments;
 import android.Manifest;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -19,15 +20,19 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.afollestad.materialcamera.MaterialCamera;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.util.Calendar;
 import java.util.Date;
 
+import at.markushi.ui.CircleButton;
 import br.ufc.quixada.qdetective.R;
 import br.ufc.quixada.qdetective.controller.DenunciaController;
 import br.ufc.quixada.qdetective.entity.CategoriaDenuncia;
 import br.ufc.quixada.qdetective.entity.Denuncia;
+
+import static android.app.Activity.RESULT_OK;
 
 
 /**
@@ -44,6 +49,8 @@ public class NewDenunciaFragment extends Fragment {
     private DenunciaController controller;
 
     private LocationManager locationManager;
+
+    private final static int CAMERA_RQ = 6969;
 
     private double latitude;
     private double longitude;
@@ -74,6 +81,30 @@ public class NewDenunciaFragment extends Fragment {
                              Bundle savedInstanceState) {
         controller = new DenunciaController(getActivity());
         final View RootView = inflater.inflate(R.layout.fragment_new_denuncia, container, false);
+
+        CircleButton takePhoto = (CircleButton) RootView.findViewById(R.id.take_photo);
+        takePhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                new MaterialCamera(NewDenunciaFragment.this)
+                        /** all the previous methods can be called, but video ones would be ignored */
+                        .stillShot() // launches the Camera in stillshot mode
+                        .start(CAMERA_RQ);
+            }
+        });
+
+        CircleButton recVideo = (CircleButton) RootView.findViewById(R.id.rec_video);
+        recVideo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                new MaterialCamera(NewDenunciaFragment.this)
+                        .countdownMinutes(.1f)
+                        .countdownImmediately(false)
+                        .start(CAMERA_RQ);
+            }
+        });
 
         Button newDenuncia = (Button) RootView.findViewById(R.id.newDenunciaButton);
         newDenuncia.setOnClickListener(new View.OnClickListener() {
@@ -118,6 +149,21 @@ public class NewDenunciaFragment extends Fragment {
         });
 
         return RootView;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // Received recording or error from MaterialCamera
+        if (requestCode == CAMERA_RQ) {
+            if (resultCode == RESULT_OK) {
+                Toast.makeText(getActivity(), "Saved to: " + data.getDataString(), Toast.LENGTH_LONG).show();
+            } else if(data != null) {
+                Exception e = (Exception) data.getSerializableExtra(MaterialCamera.ERROR_EXTRA);
+                e.printStackTrace();
+                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event
