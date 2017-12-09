@@ -5,6 +5,7 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -21,6 +22,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.afollestad.materialcamera.MaterialCamera;
+import com.rengwuxian.materialedittext.Colors;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.util.Calendar;
@@ -54,6 +56,7 @@ public class NewDenunciaFragment extends Fragment {
 
     private double latitude;
     private double longitude;
+    private String mediaFileSrc;
 
     public NewDenunciaFragment() {
         // Required empty public constructor
@@ -138,7 +141,12 @@ public class NewDenunciaFragment extends Fragment {
 
                 getLocationManager();
 
-                Denuncia denuncia = new Denuncia(descricao, currentTime, longitude, latitude, "", nome, categoria[0]);
+                if (mediaFileSrc == null) {
+                    Toast.makeText(getActivity(), "Registre uma foto ou vídeo.", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                Denuncia denuncia = new Denuncia(descricao, currentTime, longitude, latitude, mediaFileSrc, nome, categoria[0]);
                 controller.addDenuncia(denuncia);
 
                 Toast.makeText(getActivity(), "Denúncia cadastrada com sucesso", Toast.LENGTH_LONG).show();
@@ -157,7 +165,8 @@ public class NewDenunciaFragment extends Fragment {
         // Received recording or error from MaterialCamera
         if (requestCode == CAMERA_RQ) {
             if (resultCode == RESULT_OK) {
-                Toast.makeText(getActivity(), "Saved to: " + data.getDataString(), Toast.LENGTH_LONG).show();
+                mediaFileSrc = data.getDataString();
+                Toast.makeText(getActivity(), "Foto ou vídeo registrado", Toast.LENGTH_LONG).show();
             } else if(data != null) {
                 Exception e = (Exception) data.getSerializableExtra(MaterialCamera.ERROR_EXTRA);
                 e.printStackTrace();
