@@ -105,12 +105,6 @@ public class DenunciaDAO {
         Double longitude = cursor.getDouble(cursor.getColumnIndexOrThrow(DataBaseHelper.DenunciaTable.LONGITUDE));
         int categoria = cursor.getInt(cursor.getColumnIndexOrThrow(DataBaseHelper.DenunciaTable.CATEGORIA));
         Date data = new Date(cursor.getLong(cursor.getColumnIndexOrThrow(DataBaseHelper.DenunciaTable.DATA)));
-        Log.d("desc", descricao);
-        Log.d("midia", url_midia);
-        Log.d("lat", latitude+"");
-        Log.d("long", longitude+"");
-        Log.d("cat", categoria+"");
-        Log.d("data", cursor.getLong(7)+"");
 
         Denuncia denuncia = new Denuncia(_id, descricao, data, longitude, latitude, url_midia, usuario, CategoriaDenuncia.values()[categoria]);
         return denuncia;

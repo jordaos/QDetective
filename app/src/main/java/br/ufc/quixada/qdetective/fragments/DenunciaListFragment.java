@@ -84,23 +84,7 @@ public class DenunciaListFragment extends Fragment {
             }
 
             List<Denuncia> listDen = controller.getAll();
-            recyclerView.setAdapter(new MyDenunciaRecyclerViewAdapter(listDen, mListener));
-
-            recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getActivity(),
-                    recyclerView, new ClickListener() {
-                @Override
-                public void onClick(View view, final int position) {
-                    //Values are passing to activity & to fragment as well
-                    Toast.makeText(getActivity(), "Single Click on position        :"+position,
-                            Toast.LENGTH_SHORT).show();
-                }
-
-                @Override
-                public void onLongClick(View view, int position) {
-                    Toast.makeText(getActivity(), "Long press on position :"+position,
-                            Toast.LENGTH_LONG).show();
-                }
-            }));
+            recyclerView.setAdapter(new MyDenunciaRecyclerViewAdapter(view, listDen, mListener));
         }
         return view;
     }

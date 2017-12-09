@@ -45,9 +45,16 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
+            return;
         }
+
+        getFragmentManager().executePendingTransactions();
+        int count = getFragmentManager().getBackStackEntryCount();
+        if (count > 0) {
+            getFragmentManager().popBackStack();
+            return;
+        }
+        super.onBackPressed();
     }
 
     @Override
@@ -81,11 +88,21 @@ public class MainActivity extends AppCompatActivity
         FragmentManager fm = getFragmentManager();
 
         if (id == R.id.nav_nova_denuncia) {
-            fm.beginTransaction().replace(R.id.content_frame, NewDenunciaFragment.newInstance()).commit();
+            fm.beginTransaction().replace(R.id.content_frame, NewDenunciaFragment.newInstance())
+                    .addToBackStack(null)
+                    .commit();
         } else if (id == R.id.nav_todas_denuncias) {
-            fm.beginTransaction().replace(R.id.content_frame, AboutFragment.newInstance()).commit();
+            //fm.beginTransaction().replace(R.id.content_frame, AboutFragment.newInstance()).commit();
+            fm.beginTransaction()
+                    .replace(R.id.content_frame, AboutFragment.newInstance())
+                    .addToBackStack(null)
+                    .commit();
+
+            fm.executePendingTransactions();
         } else if (id == R.id.nav_minhas_denuncias) {
-            fm.beginTransaction().replace(R.id.content_frame, DenunciaListFragment.newInstance(1)).commit();
+            fm.beginTransaction().replace(R.id.content_frame, DenunciaListFragment.newInstance(1))
+                    .addToBackStack(null)
+                    .commit();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

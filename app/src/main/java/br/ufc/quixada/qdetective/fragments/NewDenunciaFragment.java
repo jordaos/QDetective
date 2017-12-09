@@ -12,6 +12,7 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +26,7 @@ import com.afollestad.materialcamera.MaterialCamera;
 import com.rengwuxian.materialedittext.Colors;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
+import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -85,13 +87,14 @@ public class NewDenunciaFragment extends Fragment {
         controller = new DenunciaController(getActivity());
         final View RootView = inflater.inflate(R.layout.fragment_new_denuncia, container, false);
 
+        final File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+
         CircleButton takePhoto = (CircleButton) RootView.findViewById(R.id.take_photo);
         takePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 new MaterialCamera(NewDenunciaFragment.this)
-                        /** all the previous methods can be called, but video ones would be ignored */
+                        .saveDir(path)
                         .stillShot() // launches the Camera in stillshot mode
                         .start(CAMERA_RQ);
             }
@@ -101,8 +104,8 @@ public class NewDenunciaFragment extends Fragment {
         recVideo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 new MaterialCamera(NewDenunciaFragment.this)
+                        .saveDir(path)
                         .countdownMinutes(.1f)
                         .countdownImmediately(false)
                         .start(CAMERA_RQ);
