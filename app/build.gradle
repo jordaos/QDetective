@@ -32,4 +32,10 @@ dependencies {
     compile 'com.rengwuxian.materialedittext:library:2.1.4'
     compile 'com.github.markushi:circlebutton:1.1'
     compile 'com.afollestad:material-camera:0.4.4'
+
+    compile 'com.android.support:recyclerview-v7:26.1.0'
+    compile 'com.android.support:support-v4:26.1.0'
+    compile "com.daimajia.swipelayout:library:1.2.0@aar"
+    // This dude gave a shoutout to you (daimajia) on his github page:
+    compile 'jp.wasabeef:recyclerview-animators:1.0.3@aar'
 }
