@@ -1,6 +1,8 @@
 package br.ufc.quixada.qdetective.fragments;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
@@ -8,18 +10,32 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.DateFormat;
 
+import at.markushi.ui.CircleButton;
 import br.ufc.quixada.qdetective.R;
 import br.ufc.quixada.qdetective.dao.DenunciaDAO;
 import br.ufc.quixada.qdetective.entity.Denuncia;
@@ -72,41 +88,104 @@ public class DenunciaDetailsFragment extends Fragment {
             Toast.makeText(getActivity(), "Denúncia não encontrada", Toast.LENGTH_LONG).show();
             return;
         }
-        idDenuncia= getArguments().getInt(ARG_PARAM1);
+        idDenuncia = getArguments().getInt(ARG_PARAM1);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_denuncia_details, container, false);
+        final View view = inflater.inflate(R.layout.fragment_denuncia_details, container, false);
 
         denunciaDAO = new DenunciaDAO(view.getContext());
-        Denuncia denuncia = denunciaDAO.buscarPorId(idDenuncia);
-        String filename = denuncia.getUriMidia().substring(denuncia.getUriMidia().lastIndexOf("/")+1);
+        final Denuncia denuncia = denunciaDAO.buscarPorId(idDenuncia);
+        String filename = denuncia.getUriMidia().substring(denuncia.getUriMidia().lastIndexOf("/") + 1);
 
         Log.d("image path", denuncia.getUriMidia());
 
         TextView detalhesTextView = (TextView) view.findViewById(R.id.descricaoDetailsDenuncia);
+        TextView usuarioTextView = (TextView) view.findViewById(R.id.usuarioDetailsDenuncia);
+        TextView dataTextView = (TextView) view.findViewById(R.id.dataDetailsDenuncia);
+        TextView categoriaTextView = (TextView) view.findViewById(R.id.categoriaDetailsDenuncia);
         ImageView imageView = (ImageView) view.findViewById(R.id.imageDetaisDenuncia);
+        final VideoView videoView = (VideoView) view.findViewById(R.id.videoDetaisDenuncia);
+        LinearLayout videoPlayer = (LinearLayout) view.findViewById(R.id.videoPlayer);
+
         detalhesTextView.setText(denuncia.getDescricao());
+        usuarioTextView.setText(denuncia.getUsuario());
+        String data = DateFormat.getDateInstance().format(denuncia.getData());
+        dataTextView.setText(data);
+        String categoria = "";
+        switch (denuncia.getCategoria()){
+            case EQUIPAMENTOS:
+                categoria = "Equipamentos comunitários";
+                break;
+            case VIAS_PUBLICAS:
+                categoria = "Vias públicas de acesso";
+                break;
+            case LIMPEZA_SANEAMENTO:
+                categoria = "Limpeza urbana e saneamento";
+                break;
+        }
+        categoriaTextView.setText(categoria);
 
         File path = Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES);
         File file = new File(path, filename);
-        try {
-            // Make sure the Pictures directory exists.
-            path.mkdirs();
+        String ext = file.getName().substring(file.getName().indexOf(".") + 1);
+        if (ext.equalsIgnoreCase("jpg")) {
+            imageView.setVisibility(View.VISIBLE);
+            try {
+                // Make sure the Pictures directory exists.
+                path.mkdirs();
 
-            file.createNewFile();
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+                file.createNewFile();
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inPreferredConfig = Bitmap.Config.ARGB_8888;
 
-            Bitmap bitmap = BitmapFactory.decodeStream(new FileInputStream(file), null, options);
-            imageView.setImageBitmap(bitmap);
-        } catch (IOException e) {
-            e.printStackTrace();
+                Bitmap bitmap = BitmapFactory.decodeStream(new FileInputStream(file), null, options);
+                imageView.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else if (ext.equalsIgnoreCase("mp4")) {
+            CircleButton playVideo = (CircleButton) view.findViewById(R.id.play_video);
+            playVideo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    videoView.start();
+                }
+            });
+            videoPlayer.setVisibility(View.VISIBLE);
+            videoView.setVideoPath(file.getAbsolutePath());
         }
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    MapView mv = new MapView(view.getContext());
+                    mv.onCreate(null);
+                    mv.onPause();
+                    mv.onDestroy();
+                }catch (Exception ignored){
+
+                }
+            }
+        }).start();
+        final MapView mapView = (MapView) view.findViewById(R.id.mapView);
+        mapView.onCreate(savedInstanceState);
+        mapView.onEnterAmbient(null);
+        mapView.getMapAsync(new OnMapReadyCallback() {
+
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+                LatLng coordinates = new LatLng(denuncia.getLatitude(), denuncia.getLongitude());
+                googleMap.addMarker(new MarkerOptions().position(coordinates));
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(coordinates, 15));
+                mapView.onResume();
+            }
+        });
 
 
         return view;

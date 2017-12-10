@@ -89,6 +89,8 @@ public class NewDenunciaFragment extends Fragment {
 
         final File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
 
+        getLocationManager();
+
         CircleButton takePhoto = (CircleButton) RootView.findViewById(R.id.take_photo);
         takePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,8 +143,6 @@ public class NewDenunciaFragment extends Fragment {
                 String nome = nomeEditText.getText().toString();
                 String descricao = descricaoEditText.getText().toString();
                 Date currentTime = Calendar.getInstance().getTime();
-
-                getLocationManager();
 
                 if (mediaFileSrc == null) {
                     Toast.makeText(getActivity(), "Registre uma foto ou vídeo.", Toast.LENGTH_LONG).show();

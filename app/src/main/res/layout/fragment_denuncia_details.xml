@@ -3,19 +3,85 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="br.ufc.quixada.qdetective.fragments.DenunciaDetailsFragment">
+    tools:context="br.ufc.quixada.qdetective.fragments.NewDenunciaFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:id="@+id/descricaoDetailsDenuncia"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/imageDetaisDenuncia"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:src="@drawable/md_transparent" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <ImageView
+                android:id="@+id/imageDetaisDenuncia"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/videoPlayer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <VideoView
+                    android:id="@+id/videoDetaisDenuncia"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:layout_gravity="center" />
+
+                <at.markushi.ui.CircleButton
+                    android:id="@+id/play_video"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:layout_gravity="center"
+                    android:layout_marginHorizontal="5dp"
+                    android:src="@drawable/ic_play_arrow_black_24dp"
+                    app:cb_color="@color/colorAccent"
+                    app:cb_pressedRingWidth="8dip" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/descricaoDetailsDenuncia"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_description_black_24dp"
+                android:text="Descrião da denúncia"
+                android:textSize="20dp" />
+
+            <TextView
+                android:id="@+id/usuarioDetailsDenuncia"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_person_black_24dp"
+                android:text="Usuário"
+                android:textSize="20dp" />
+
+            <TextView
+                android:id="@+id/dataDetailsDenuncia"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_date_range_black_24dp"
+                android:text="dd/MM/yyy"
+                android:textSize="20dp" />
+
+            <TextView
+                android:id="@+id/categoriaDetailsDenuncia"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_view_carousel_black_24dp"
+                android:text="Categoria"
+                android:textSize="20dp" />
+
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/mapView"
+                android:layout_width="match_parent"
+                android:layout_height="250dp" />
+        </LinearLayout>
+    </ScrollView>
 </FrameLayout>
