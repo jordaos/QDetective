@@ -80,6 +80,26 @@ public class DenunciaDAO {
         return idNovoRegistro;
     }
 
+    public int atualizar(Denuncia denuncia) {
+        String selecao = DataBaseHelper.DenunciaTable._ID + " = ?";
+        String[] argumentos = {String.valueOf(denuncia.getId())};
+
+        ContentValues values = new ContentValues();
+        values.put(DataBaseHelper.DenunciaTable.USUARIO, denuncia.getUsuario());
+        values.put(DataBaseHelper.DenunciaTable.URL_MIDIA, denuncia.getUriMidia());
+        values.put(DataBaseHelper.DenunciaTable.LONGITUDE, denuncia.getLongitude());
+        values.put(DataBaseHelper.DenunciaTable.LATITUDE, denuncia.getLatitude());
+        values.put(DataBaseHelper.DenunciaTable.DATA, denuncia.getData().getTime());
+        values.put(DataBaseHelper.DenunciaTable.DESCRICAO, denuncia.getDescricao());
+        values.put(DataBaseHelper.DenunciaTable.CATEGORIA, denuncia.getCategoria().ordinal());
+
+        db = helper.getWritableDatabase();
+
+        int linhasAfetadas = db.update(DataBaseHelper.DenunciaTable.NOME_TABELA, values, selecao, argumentos);
+        db.close();
+        return linhasAfetadas;
+    }
+
 
     public int excluirPorId(long id) {
         String selecao = DataBaseHelper.DenunciaTable._ID + " = ?";

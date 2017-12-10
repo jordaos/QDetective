@@ -33,6 +33,7 @@ import java.util.Date;
 import at.markushi.ui.CircleButton;
 import br.ufc.quixada.qdetective.R;
 import br.ufc.quixada.qdetective.controller.DenunciaController;
+import br.ufc.quixada.qdetective.dao.DenunciaDAO;
 import br.ufc.quixada.qdetective.entity.CategoriaDenuncia;
 import br.ufc.quixada.qdetective.entity.Denuncia;
 
@@ -48,9 +49,12 @@ import static android.app.Activity.RESULT_OK;
  * create an instance of this fragment.
  */
 public class NewDenunciaFragment extends Fragment {
+    private static final String ARG_PARAM1 = "idDenuncia";
+
     private OnFragmentInteractionListener mListener;
 
     private DenunciaController controller;
+    private Denuncia denuncia;
 
     private LocationManager locationManager;
 
@@ -59,6 +63,13 @@ public class NewDenunciaFragment extends Fragment {
     private double latitude;
     private double longitude;
     private String mediaFileSrc;
+
+    CircleButton takePhoto;
+    CircleButton recVideo;
+    Button newDenuncia;
+    MaterialEditText nomeEditText;
+    RadioGroup group;
+    MaterialEditText descricaoEditText;
 
     public NewDenunciaFragment() {
         // Required empty public constructor
@@ -76,22 +87,74 @@ public class NewDenunciaFragment extends Fragment {
         return fragment;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param idDenuncia ID da denúncia, quando for editar
+     * @return A new instance of fragment NewDenunciaFragment.
+     */
+    // TODO: Rename and change types and number of parameters
+    public static NewDenunciaFragment newInstance(int idDenuncia) {
+        NewDenunciaFragment fragment = new NewDenunciaFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_PARAM1, idDenuncia);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         controller = new DenunciaController(getActivity());
-        final View RootView = inflater.inflate(R.layout.fragment_new_denuncia, container, false);
+        if (getArguments() == null) {
+            return;
+        }
+
+        int id = getArguments().getInt(ARG_PARAM1);
+        denuncia = controller.getById(id);
+    }
+
+    public void initEdition(View view) {
+       nomeEditText.setText(denuncia.getUsuario());
+       descricaoEditText.setText(denuncia.getDescricao());
+       mediaFileSrc = denuncia.getUriMidia();
+       latitude = denuncia.getLatitude();
+       longitude = denuncia.getLongitude();
+
+       switch (denuncia.getCategoria()){
+           case LIMPEZA_SANEAMENTO:
+               group.check(R.id.radio_limpeza_saneamento);
+               break;
+           case VIAS_PUBLICAS:
+               group.check(R.id.radio_vias_publicas);
+               break;
+           case EQUIPAMENTOS:
+               group.check(R.id.radio_equipamentos);
+               break;
+       }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
+                             Bundle savedInstanceState) {
+        final View view = inflater.inflate(R.layout.fragment_new_denuncia, container, false);
 
         final File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
 
-        getLocationManager();
+        takePhoto = (CircleButton) view.findViewById(R.id.take_photo);
+        recVideo = (CircleButton) view.findViewById(R.id.rec_video);
+        newDenuncia = (Button) view.findViewById(R.id.newDenunciaButton);
+        nomeEditText = (MaterialEditText) view.findViewById(R.id.nomeEditText);
+        group = (RadioGroup) view.findViewById(R.id.group_categoria);
+        descricaoEditText = (MaterialEditText) view.findViewById(R.id.descricaoEditText);
 
-        CircleButton takePhoto = (CircleButton) RootView.findViewById(R.id.take_photo);
+        if(denuncia != null){
+            initEdition(view);
+        }else {
+            getLocationManager();
+        }
+
         takePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -102,7 +165,6 @@ public class NewDenunciaFragment extends Fragment {
             }
         });
 
-        CircleButton recVideo = (CircleButton) RootView.findViewById(R.id.rec_video);
         recVideo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -114,32 +176,27 @@ public class NewDenunciaFragment extends Fragment {
             }
         });
 
-        Button newDenuncia = (Button) RootView.findViewById(R.id.newDenunciaButton);
+        final CategoriaDenuncia[] categoria = {CategoriaDenuncia.EQUIPAMENTOS};
+        group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId) {
+                    case R.id.radio_equipamentos:
+                        categoria[0] = CategoriaDenuncia.EQUIPAMENTOS;
+                        break;
+                    case R.id.radio_limpeza_saneamento:
+                        categoria[0] = CategoriaDenuncia.LIMPEZA_SANEAMENTO;
+                        break;
+                    case R.id.radio_vias_publicas:
+                        categoria[0] = CategoriaDenuncia.VIAS_PUBLICAS;
+                        break;
+                }
+            }
+        });
+
         newDenuncia.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MaterialEditText nomeEditText = (MaterialEditText) RootView.findViewById(R.id.nomeEditText);
-                MaterialEditText descricaoEditText = (MaterialEditText) RootView.findViewById(R.id.descricaoEditText);
-                RadioGroup group = (RadioGroup)RootView.findViewById(R.id.group_categoria);
-
-                final CategoriaDenuncia[] categoria = {CategoriaDenuncia.EQUIPAMENTOS};
-                group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(RadioGroup group, int checkedId) {
-                        switch (checkedId) {
-                            case R.id.radio_equipamentos:
-                                categoria[0] = CategoriaDenuncia.EQUIPAMENTOS;
-                                break;
-                            case R.id.radio_limpeza_saneamento:
-                                categoria[0] = CategoriaDenuncia.LIMPEZA_SANEAMENTO;
-                                break;
-                            case R.id.radio_vias_publicas:
-                                categoria[0] = CategoriaDenuncia.VIAS_PUBLICAS;
-                                break;
-                        }
-                    }
-                });
-
                 String nome = nomeEditText.getText().toString();
                 String descricao = descricaoEditText.getText().toString();
                 Date currentTime = Calendar.getInstance().getTime();
@@ -149,9 +206,14 @@ public class NewDenunciaFragment extends Fragment {
                     return;
                 }
 
-                Denuncia denuncia = new Denuncia(descricao, currentTime, longitude, latitude, mediaFileSrc, nome, categoria[0]);
-                controller.addDenuncia(denuncia);
+                Denuncia newDenuncia = new Denuncia(descricao, currentTime, longitude, latitude, mediaFileSrc, nome, categoria[0]);
 
+                if(denuncia == null) {
+                    controller.addDenuncia(newDenuncia);
+                }else {
+                    newDenuncia.setId(denuncia.getId());
+                    controller.update(newDenuncia);
+                }
                 Toast.makeText(getActivity(), "Denúncia cadastrada com sucesso", Toast.LENGTH_LONG).show();
 
                 FragmentManager fm = getFragmentManager();
@@ -159,7 +221,7 @@ public class NewDenunciaFragment extends Fragment {
             }
         });
 
-        return RootView;
+        return view;
     }
 
     @Override

@@ -82,6 +82,16 @@ public class MyDenunciaRecyclerViewAdapter extends RecyclerView.Adapter<MyDenunc
                 Toast.makeText(view.getContext(), "Deleted " + denuncia.getDescricao() + "!", Toast.LENGTH_SHORT).show();
             }
         });
+
+        holder.mEditButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentManager fm = ((Activity) view.getContext()).getFragmentManager();
+                fm.beginTransaction().replace(R.id.content_frame, NewDenunciaFragment.newInstance(denuncia.getId()))
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
     }
 
     @Override

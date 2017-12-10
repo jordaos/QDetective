@@ -10,8 +10,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.os.Environment;
-import android.support.v4.app.ActivityCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -50,7 +48,6 @@ import br.ufc.quixada.qdetective.entity.Denuncia;
  * create an instance of this fragment.
  */
 public class DenunciaDetailsFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "idDenuncia";
 
@@ -100,8 +97,6 @@ public class DenunciaDetailsFragment extends Fragment {
         denunciaDAO = new DenunciaDAO(view.getContext());
         final Denuncia denuncia = denunciaDAO.buscarPorId(idDenuncia);
         String filename = denuncia.getUriMidia().substring(denuncia.getUriMidia().lastIndexOf("/") + 1);
-
-        Log.d("image path", denuncia.getUriMidia());
 
         TextView detalhesTextView = (TextView) view.findViewById(R.id.descricaoDetailsDenuncia);
         TextView usuarioTextView = (TextView) view.findViewById(R.id.usuarioDetailsDenuncia);

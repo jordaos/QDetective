@@ -1,6 +1,7 @@
 package br.ufc.quixada.qdetective.controller;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.List;
 
@@ -24,5 +25,14 @@ public class DenunciaController {
 
     public List<Denuncia> getAll() {
         return denunciaDAO.listar();
+    }
+
+    public Denuncia getById(int id) {
+        return denunciaDAO.buscarPorId(id);
+    }
+
+    public void update(Denuncia denuncia) {
+        int x =denunciaDAO.atualizar(denuncia);
+        Log.d("affecteds", x+"");
     }
 }
