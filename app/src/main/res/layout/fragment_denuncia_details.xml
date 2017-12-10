@@ -6,6 +6,7 @@
     tools:context="br.ufc.quixada.qdetective.fragments.NewDenunciaFragment">
 
     <ScrollView
+        android:id="@+id/scrollDeiails"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -78,10 +79,25 @@
                 android:text="Categoria"
                 android:textSize="20dp" />
 
-            <com.google.android.gms.maps.MapView
-                android:id="@+id/mapView"
+
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="250dp" />
+                android:layout_height="250dp">
+
+                <com.google.android.gms.maps.MapView
+                    android:id="@+id/mapView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:enabled="true"
+                    android:clickable="true"/>
+
+                <ImageView
+                    android:id="@+id/transparent_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/md_transparent" />
+
+            </RelativeLayout>
         </LinearLayout>
     </ScrollView>
 </FrameLayout>
