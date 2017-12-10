@@ -24,10 +24,12 @@
 
         <activity
             android:name="com.afollestad.materialcamera.CaptureActivity"
-            android:theme="@style/MaterialCamera.CaptureActivity" />
+            android:theme="@style/MaterialCamera.CaptureActivity"
+            android:hardwareAccelerated="true"/>
         <activity
             android:name="com.afollestad.materialcamera.CaptureActivity2"
-            android:theme="@style/MaterialCamera.CaptureActivity" />
+            android:theme="@style/MaterialCamera.CaptureActivity"
+            android:hardwareAccelerated="true"/>
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"

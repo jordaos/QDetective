@@ -231,7 +231,6 @@ public class NewDenunciaFragment extends Fragment {
         if (requestCode == CAMERA_RQ) {
             if (resultCode == RESULT_OK) {
                 mediaFileSrc = data.getDataString();
-                Toast.makeText(getActivity(), "Foto ou vídeo registrado", Toast.LENGTH_LONG).show();
             } else if(data != null) {
                 Exception e = (Exception) data.getSerializableExtra(MaterialCamera.ERROR_EXTRA);
                 e.printStackTrace();

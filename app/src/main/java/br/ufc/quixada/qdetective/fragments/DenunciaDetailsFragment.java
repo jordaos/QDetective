@@ -95,8 +95,10 @@ public class DenunciaDetailsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_denuncia_details, container, false);
+        //view.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
         denunciaDAO = new DenunciaDAO(view.getContext());
+
         final Denuncia denuncia = denunciaDAO.buscarPorId(idDenuncia);
         String filename = denuncia.getUriMidia().substring(denuncia.getUriMidia().lastIndexOf("/") + 1);
 
