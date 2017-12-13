@@ -2,34 +2,24 @@ package br.ufc.quixada.qdetective.fragments;
 
 import android.app.Activity;
 import android.app.FragmentManager;
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.daimajia.swipe.SwipeLayout;
-
 import br.ufc.quixada.qdetective.R;
-import br.ufc.quixada.qdetective.dao.DenunciaDAO;
+import br.ufc.quixada.qdetective.controller.DenunciaController;
 import br.ufc.quixada.qdetective.entity.Denuncia;
 import br.ufc.quixada.qdetective.entity.ListViewType;
-import br.ufc.quixada.qdetective.fragments.DenunciaListFragment.OnListFragmentInteractionListener;
+import br.ufc.quixada.qdetective.fragments.DenunciaServerListFragment.OnListFragmentInteractionListener;
 
 import java.util.List;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link Denuncia} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
- */
-public class MyDenunciaRecyclerViewAdapter extends RecyclerView.Adapter<MyDenunciaRecyclerViewAdapter.ViewHolder> {
+public class MyDenunciaServerRecyclerViewAdapter extends RecyclerView.Adapter<MyDenunciaServerRecyclerViewAdapter.ViewHolder> {
 
     private final List<Denuncia> mValues;
     private final OnListFragmentInteractionListener mListener;
@@ -37,12 +27,13 @@ public class MyDenunciaRecyclerViewAdapter extends RecyclerView.Adapter<MyDenunc
     ImageButton buttonDelete;
     ImageButton buttonEdit;
 
-    private DenunciaDAO denunciaDAO;
+    private DenunciaController controller;
 
-    public MyDenunciaRecyclerViewAdapter(View view, List<Denuncia> items, OnListFragmentInteractionListener listener) {
+    public MyDenunciaServerRecyclerViewAdapter(View view, List<Denuncia> items, DenunciaServerListFragment.OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
-        denunciaDAO = new DenunciaDAO(view.getContext());
+
+        controller = new DenunciaController(view.getContext());
 
         buttonDelete = (ImageButton) view.findViewById(R.id.delete);
         buttonEdit = (ImageButton) view.findViewById(R.id.edit);
@@ -51,7 +42,7 @@ public class MyDenunciaRecyclerViewAdapter extends RecyclerView.Adapter<MyDenunc
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_list_denuncia, parent, false);
+                .inflate(R.layout.fragment_denuncia_server_list, parent, false);
         return new ViewHolder(view);
     }
 
@@ -67,7 +58,7 @@ public class MyDenunciaRecyclerViewAdapter extends RecyclerView.Adapter<MyDenunc
             @Override
             public void onClick(View view) {
                 FragmentManager fm = ((Activity) view.getContext()).getFragmentManager();
-                fm.beginTransaction().replace(R.id.content_frame, DenunciaDetailsFragment.newInstance(denuncia.getId(), ListViewType.LOCAL))
+                fm.beginTransaction().replace(R.id.content_frame, DenunciaDetailsFragment.newInstance(denuncia.getId(), ListViewType.SERVER))
                         .addToBackStack(null)
                         .commit();
             }
@@ -77,7 +68,7 @@ public class MyDenunciaRecyclerViewAdapter extends RecyclerView.Adapter<MyDenunc
             @Override
             public void onClick(View view) {
                 mValues.remove(position);
-                denunciaDAO.excluirPorId(denuncia.getId());
+                //denunciaDAO.excluirPorId(denuncia.getId());
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, mValues.size());
                 Toast.makeText(view.getContext(), "Deleted " + denuncia.getDescricao() + "!", Toast.LENGTH_SHORT).show();

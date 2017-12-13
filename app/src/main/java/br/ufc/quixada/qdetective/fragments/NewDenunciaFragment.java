@@ -36,6 +36,7 @@ import br.ufc.quixada.qdetective.controller.DenunciaController;
 import br.ufc.quixada.qdetective.dao.DenunciaDAO;
 import br.ufc.quixada.qdetective.entity.CategoriaDenuncia;
 import br.ufc.quixada.qdetective.entity.Denuncia;
+import br.ufc.quixada.qdetective.entity.ListViewType;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -170,6 +171,7 @@ public class NewDenunciaFragment extends Fragment {
             public void onClick(View view) {
                 new MaterialCamera(NewDenunciaFragment.this)
                         .saveDir(path)
+                        .showPortraitWarning(false)
                         .countdownMinutes(.1f)
                         .countdownImmediately(false)
                         .start(CAMERA_RQ);

@@ -14,8 +14,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import br.ufc.quixada.qdetective.entity.ListViewType;
 import br.ufc.quixada.qdetective.fragments.AboutFragment;
 import br.ufc.quixada.qdetective.fragments.DenunciaListFragment;
+import br.ufc.quixada.qdetective.fragments.DenunciaServerListFragment;
 import br.ufc.quixada.qdetective.fragments.NewDenunciaFragment;
 
 public class MainActivity extends AppCompatActivity
@@ -92,13 +94,9 @@ public class MainActivity extends AppCompatActivity
                     .addToBackStack(null)
                     .commit();
         } else if (id == R.id.nav_todas_denuncias) {
-            //fm.beginTransaction().replace(R.id.content_frame, AboutFragment.newInstance()).commit();
-            fm.beginTransaction()
-                    .replace(R.id.content_frame, AboutFragment.newInstance())
+            fm.beginTransaction().replace(R.id.content_frame, DenunciaServerListFragment.newInstance())
                     .addToBackStack(null)
                     .commit();
-
-            fm.executePendingTransactions();
         } else if (id == R.id.nav_minhas_denuncias) {
             fm.beginTransaction().replace(R.id.content_frame, DenunciaListFragment.newInstance(1))
                     .addToBackStack(null)

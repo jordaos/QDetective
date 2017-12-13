@@ -34,11 +34,19 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.util.Date;
 
 import at.markushi.ui.CircleButton;
 import br.ufc.quixada.qdetective.R;
+import br.ufc.quixada.qdetective.controller.DenunciaController;
 import br.ufc.quixada.qdetective.dao.DenunciaDAO;
+import br.ufc.quixada.qdetective.entity.CategoriaDenuncia;
 import br.ufc.quixada.qdetective.entity.Denuncia;
+import br.ufc.quixada.qdetective.entity.DenunciaServer;
+import br.ufc.quixada.qdetective.entity.ListViewType;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 /**
@@ -52,11 +60,16 @@ import br.ufc.quixada.qdetective.entity.Denuncia;
 public class DenunciaDetailsFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "idDenuncia";
+    private static final String ARG_PARAM2 = "viewType";
 
     // TODO: Rename and change types of parameters
     private int idDenuncia;
+    private ListViewType listType;
 
     private DenunciaDAO denunciaDAO;
+    private DenunciaController controller;
+
+    private Denuncia denuncia;
 
     private OnFragmentInteractionListener mListener;
 
@@ -72,10 +85,11 @@ public class DenunciaDetailsFragment extends Fragment {
      * @return A new instance of fragment DenunciaDetailsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static DenunciaDetailsFragment newInstance(int idDenuncia) {
+    public static DenunciaDetailsFragment newInstance(int idDenuncia, ListViewType listType) {
         DenunciaDetailsFragment fragment = new DenunciaDetailsFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_PARAM1, idDenuncia);
+        args.putInt(ARG_PARAM2, listType.ordinal());
         fragment.setArguments(args);
         return fragment;
     }
@@ -88,18 +102,42 @@ public class DenunciaDetailsFragment extends Fragment {
             return;
         }
         idDenuncia = getArguments().getInt(ARG_PARAM1);
+        listType = ListViewType.values()[getArguments().getInt(ARG_PARAM2)];
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             final Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_denuncia_details, container, false);
         //view.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
         denunciaDAO = new DenunciaDAO(view.getContext());
+        controller = new DenunciaController(view.getContext());
 
-        final Denuncia denuncia = denunciaDAO.buscarPorId(idDenuncia);
+        if(listType == ListViewType.LOCAL) {
+            denuncia = denunciaDAO.buscarPorId(idDenuncia);
+            preencher(view, savedInstanceState);
+        } else {
+            controller.getByIdFromServer(idDenuncia).enqueue(new Callback<DenunciaServer>() {
+                @Override
+                public void onResponse(Call<DenunciaServer> call, Response<DenunciaServer> response) {
+                    DenunciaServer ds = response.body();
+                    denuncia = new Denuncia(ds.getId(), ds.getDescricao(), new Date(ds.getData()), ds.getLongitude(), ds.getLatitude(), ds.getUriMidia(), ds.getUsuario(), CategoriaDenuncia.EQUIPAMENTOS);
+                    preencher(view, savedInstanceState);
+                }
+
+                @Override
+                public void onFailure(Call<DenunciaServer> call, Throwable t) {
+
+                }
+            });
+        }
+
+        return view;
+    }
+
+    private void preencher(final View view, Bundle savedInstanceState) {
         String filename = denuncia.getUriMidia().substring(denuncia.getUriMidia().lastIndexOf("/") + 1);
 
         TextView detalhesTextView = (TextView) view.findViewById(R.id.descricaoDetailsDenuncia);
@@ -217,9 +255,6 @@ public class DenunciaDetailsFragment extends Fragment {
                 }
             }
         });
-
-
-        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

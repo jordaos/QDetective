@@ -19,6 +19,7 @@ android {
 }
 
 
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     //noinspection GradleCompatible
@@ -41,4 +42,8 @@ dependencies {
     compile 'jp.wasabeef:recyclerview-animators:1.0.3@aar'
     implementation 'com.google.android.gms:play-services-maps:11.6.2'
     compile 'com.google.android.gms:play-services-maps:9.0.1'
+    // Retrofit
+    compile 'com.google.code.gson:gson:2.8.2'
+    compile 'com.squareup.retrofit2:retrofit:2.3.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
 }
