@@ -123,7 +123,19 @@ public class DenunciaDetailsFragment extends Fragment {
                 @Override
                 public void onResponse(Call<DenunciaServer> call, Response<DenunciaServer> response) {
                     DenunciaServer ds = response.body();
-                    denuncia = new Denuncia(ds.getId(), ds.getDescricao(), new Date(ds.getData()), ds.getLongitude(), ds.getLatitude(), ds.getUriMidia(), ds.getUsuario(), CategoriaDenuncia.EQUIPAMENTOS);
+
+                    CategoriaDenuncia categoria = CategoriaDenuncia.EQUIPAMENTOS_COMUNICATARIOS;
+                    switch (ds.getCategoria()){
+                        case "VIAS_PUBLICAS":
+                            categoria = CategoriaDenuncia.VIAS_PUBLICAS;
+                            break;
+                        case "LIMPEZA_URBANA":
+                            categoria = CategoriaDenuncia.LIMPEZA_URBANA;
+                            break;
+                    }
+
+                    denuncia = new Denuncia(ds.getId(), ds.getDescricao(), new Date(ds.getData()), ds.getLongitude(), ds.getLatitude(), ds.getUriMidia(), ds.getUsuario(), categoria);
+
                     preencher(view, savedInstanceState);
                 }
 
@@ -152,18 +164,7 @@ public class DenunciaDetailsFragment extends Fragment {
         usuarioTextView.setText(denuncia.getUsuario());
         String data = DateFormat.getDateInstance().format(denuncia.getData());
         dataTextView.setText(data);
-        String categoria = "";
-        switch (denuncia.getCategoria()){
-            case EQUIPAMENTOS:
-                categoria = "Equipamentos comunitários";
-                break;
-            case VIAS_PUBLICAS:
-                categoria = "Vias públicas de acesso";
-                break;
-            case LIMPEZA_SANEAMENTO:
-                categoria = "Limpeza urbana e saneamento";
-                break;
-        }
+        String categoria = denuncia.getCategoria().getDescricao();
         categoriaTextView.setText(categoria);
 
         File path = Environment.getExternalStoragePublicDirectory(

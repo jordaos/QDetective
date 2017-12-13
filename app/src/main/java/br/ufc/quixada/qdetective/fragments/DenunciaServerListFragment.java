@@ -74,7 +74,16 @@ public class DenunciaServerListFragment extends Fragment {
 
                     List<Denuncia> list = new ArrayList<Denuncia>();
                     for (DenunciaServer ds : response.body()) {
-                        Denuncia denuncia = new Denuncia(ds.getId(), ds.getDescricao(), new Date(ds.getData()), ds.getLongitude(), ds.getLatitude(), ds.getUriMidia(), ds.getUsuario(), CategoriaDenuncia.EQUIPAMENTOS);
+                        CategoriaDenuncia categoria = CategoriaDenuncia.EQUIPAMENTOS_COMUNICATARIOS;
+                        switch (ds.getCategoria()){
+                            case "VIAS_PUBLICAS":
+                                categoria = CategoriaDenuncia.VIAS_PUBLICAS;
+                                break;
+                            case "LIMPEZA_URBANA":
+                                categoria = CategoriaDenuncia.LIMPEZA_URBANA;
+                                break;
+                        }
+                        Denuncia denuncia = new Denuncia(ds.getId(), ds.getDescricao(), new Date(ds.getData()), ds.getLongitude(), ds.getLatitude(), ds.getUriMidia(), ds.getUsuario(), categoria);
                         list.add(denuncia);
                     }
 

@@ -43,4 +43,14 @@ public class DenunciaService {
         Call<DenunciaServer> call = apiService.getDenuncia(id);
         return call;
     }
+
+    public Call<String> getFile(int id) {
+        Call<String> call = apiService.getFile(id);
+        return call;
+    }
+
+    public Call<DenunciaServer> postDenuncia(DenunciaServer denuncia) {
+        Call<DenunciaServer> call = apiService.createDenuncia(denuncia);
+        return call;
+    }
 }

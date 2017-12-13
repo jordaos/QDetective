@@ -9,4 +9,5 @@
     <color name="colorGrayDark">#c7c7c7</color>
     <color name="colorInfo">#3489ff</color>
     <color name="colorDanger">#FF5534</color>
+    <color name="colorSuccess">#34ff56</color>
 </resources>

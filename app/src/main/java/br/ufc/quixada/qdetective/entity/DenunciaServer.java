@@ -94,4 +94,14 @@ public class DenunciaServer {
         this.categoria = categoria;
     }
 
+    public DenunciaServer(Integer id, String descricao, long data, Double longitude, Double latitude, String uriMidia, String usuario, String categoria) {
+        this.id = id;
+        this.descricao = descricao;
+        this.data = data;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.uriMidia = uriMidia;
+        this.usuario = usuario;
+        this.categoria = categoria;
+    }
 }

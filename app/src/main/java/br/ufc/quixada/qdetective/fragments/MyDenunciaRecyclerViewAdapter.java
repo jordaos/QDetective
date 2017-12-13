@@ -17,10 +17,15 @@ import android.widget.Toast;
 import com.daimajia.swipe.SwipeLayout;
 
 import br.ufc.quixada.qdetective.R;
+import br.ufc.quixada.qdetective.controller.DenunciaController;
 import br.ufc.quixada.qdetective.dao.DenunciaDAO;
 import br.ufc.quixada.qdetective.entity.Denuncia;
+import br.ufc.quixada.qdetective.entity.DenunciaServer;
 import br.ufc.quixada.qdetective.entity.ListViewType;
 import br.ufc.quixada.qdetective.fragments.DenunciaListFragment.OnListFragmentInteractionListener;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import java.util.List;
 
@@ -36,16 +41,20 @@ public class MyDenunciaRecyclerViewAdapter extends RecyclerView.Adapter<MyDenunc
 
     ImageButton buttonDelete;
     ImageButton buttonEdit;
+    ImageButton buttonSend;
 
     private DenunciaDAO denunciaDAO;
+    private DenunciaController controller;
 
     public MyDenunciaRecyclerViewAdapter(View view, List<Denuncia> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
         denunciaDAO = new DenunciaDAO(view.getContext());
+        controller = new DenunciaController(view.getContext());
 
         buttonDelete = (ImageButton) view.findViewById(R.id.delete);
         buttonEdit = (ImageButton) view.findViewById(R.id.edit);
+        buttonSend = (ImageButton) view.findViewById(R.id.send);
     }
 
     @Override
@@ -93,6 +102,27 @@ public class MyDenunciaRecyclerViewAdapter extends RecyclerView.Adapter<MyDenunc
                         .commit();
             }
         });
+
+        holder.mSendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
+                DenunciaServer denunciaServer = new DenunciaServer(denuncia.getId(), denuncia.getDescricao(), denuncia.getData().getTime(), denuncia.getLongitude(), denuncia.getLatitude(), denuncia.getUriMidia(), denuncia.getUsuario(), "EQUIPAMENTOS_COMUNICATARIOS");
+                controller.postDenuncia(denunciaServer).enqueue(new Callback<DenunciaServer>() {
+                    @Override
+                    public void onResponse(Call<DenunciaServer> call, Response<DenunciaServer> response) {
+                        Log.d("RESPONSE", response.toString());
+                        Toast.makeText(view.getContext(), "OK", Toast.LENGTH_LONG).show();
+                        mValues.remove(position);
+                        denunciaDAO.excluirPorId(denuncia.getId());
+                    }
+
+                    @Override
+                    public void onFailure(Call<DenunciaServer> call, Throwable t) {
+                        Toast.makeText(view.getContext(), "ERRO", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        });
     }
 
     @Override
@@ -107,6 +137,7 @@ public class MyDenunciaRecyclerViewAdapter extends RecyclerView.Adapter<MyDenunc
         public final TextView mContentView;
         public final ImageButton mDeleteButton;
         public final ImageButton mEditButton;
+        public final ImageButton mSendButton;
         public Denuncia mItem;
 
         public ViewHolder(View view) {
@@ -117,6 +148,7 @@ public class MyDenunciaRecyclerViewAdapter extends RecyclerView.Adapter<MyDenunc
             mContentView = (TextView) view.findViewById(R.id.content);
             mDeleteButton = (ImageButton) view.findViewById(R.id.delete);
             mEditButton = (ImageButton) view.findViewById(R.id.edit);
+            mSendButton = (ImageButton) view.findViewById(R.id.send);
         }
 
         @Override

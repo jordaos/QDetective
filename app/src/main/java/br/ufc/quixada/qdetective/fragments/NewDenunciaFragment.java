@@ -124,13 +124,13 @@ public class NewDenunciaFragment extends Fragment {
        longitude = denuncia.getLongitude();
 
        switch (denuncia.getCategoria()){
-           case LIMPEZA_SANEAMENTO:
+           case LIMPEZA_URBANA:
                group.check(R.id.radio_limpeza_saneamento);
                break;
            case VIAS_PUBLICAS:
                group.check(R.id.radio_vias_publicas);
                break;
-           case EQUIPAMENTOS:
+           case EQUIPAMENTOS_COMUNICATARIOS:
                group.check(R.id.radio_equipamentos);
                break;
        }
@@ -178,16 +178,16 @@ public class NewDenunciaFragment extends Fragment {
             }
         });
 
-        final CategoriaDenuncia[] categoria = {CategoriaDenuncia.EQUIPAMENTOS};
+        final CategoriaDenuncia[] categoria = {CategoriaDenuncia.EQUIPAMENTOS_COMUNICATARIOS};
         group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId) {
                     case R.id.radio_equipamentos:
-                        categoria[0] = CategoriaDenuncia.EQUIPAMENTOS;
+                        categoria[0] = CategoriaDenuncia.EQUIPAMENTOS_COMUNICATARIOS;
                         break;
                     case R.id.radio_limpeza_saneamento:
-                        categoria[0] = CategoriaDenuncia.LIMPEZA_SANEAMENTO;
+                        categoria[0] = CategoriaDenuncia.LIMPEZA_URBANA;
                         break;
                     case R.id.radio_vias_publicas:
                         categoria[0] = CategoriaDenuncia.VIAS_PUBLICAS;

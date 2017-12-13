@@ -38,6 +38,13 @@
                 android:background="@color/colorDanger"
                 android:src="@drawable/ic_delete_black_24dp"
                 android:clickable="true" />
+            <ImageButton
+                android:id="@+id/send"
+                android:layout_width="60dp"
+                android:layout_height="match_parent"
+                android:background="@color/colorSuccess"
+                android:src="@drawable/ic_menu_send"
+                android:clickable="true" />
         </LinearLayout>
 
         <LinearLayout

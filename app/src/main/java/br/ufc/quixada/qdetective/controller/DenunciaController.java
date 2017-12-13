@@ -3,6 +3,8 @@ package br.ufc.quixada.qdetective.controller;
 import android.content.Context;
 import android.util.Log;
 
+import com.google.gson.Gson;
+
 import java.util.List;
 
 import br.ufc.quixada.qdetective.dao.DenunciaDAO;
@@ -47,5 +49,16 @@ public class DenunciaController {
 
     public Call<DenunciaServer> getByIdFromServer(int id) {
         return denunciaService.getById(id);
+    }
+
+    public Call<String> getFile(int id) {
+        return denunciaService.getFile(id);
+    }
+
+    public Call<DenunciaServer> postDenuncia(DenunciaServer denuncia) {
+        Gson gson = new Gson();
+        String json = gson.toJson(denuncia);
+        Log.d("OBJ", json);
+        return denunciaService.postDenuncia(denuncia);
     }
 }
